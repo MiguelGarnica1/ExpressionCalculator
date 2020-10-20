@@ -3,6 +3,25 @@ import java.math.*;
 
 public class ExpressionCalculator {
 
+    public static void main(String[] args){
+        String expression = "2 + 3 + 2";
+        System.out.println(expression + " = " + evaluate(expression));
+
+        String multiExp = "2 + 3 * 3";
+        System.out.println(multiExp + " = " + evaluate(multiExp));
+
+        String pemdas = "1 + ( 2 + 3 ) * 3";
+        System.out.println(pemdas + " = " + evaluate(pemdas));
+
+        String decimals = "109.45 + 311.24";
+        System.out.println(decimals + " = " + evaluate(decimals));
+
+        String simpTrig = "cos ( 3.14 )";
+        System.out.println(simpTrig + " = " + evaluate(simpTrig));
+
+        String complexTrig = "sin ( 3.14 / 2 ) + cos ( 3.14 )";
+        System.out.println(complexTrig + " = " + evaluate(complexTrig));
+    }
 
     /*** evaluate a mathematical expression in infix format to postfix
      *
@@ -29,8 +48,8 @@ public class ExpressionCalculator {
             } else if (singleToken == '(') {
                 operators.push(tokens[i]);
             } else if (singleToken == ')') {
-                while(operators.peek() != "("){
-                    double operatorResult = applyOperator(operators.pop(),
+                while(!operators.peek().equals("(")){
+                    double operatorResult = applyOperatorToA_B(operators.pop(),
                             values.pop(), values.pop());
                     values.push(operatorResult);
                 }
@@ -42,7 +61,7 @@ public class ExpressionCalculator {
                 // apply operator to top two elements in value stack
                 while(!operators.isEmpty() &&
                         hasPrecedence(tokens[i], operators.peek())){
-                    double operatorResult = applyOperator(operators.pop(),
+                    double operatorResult = applyOperatorToA_B(operators.pop(),
                             values.pop(), values.pop());
                     values.push(operatorResult);
                 }
@@ -54,7 +73,7 @@ public class ExpressionCalculator {
         // at this point expression should be parsed int post fix
         // calculate expression
         while(!operators.isEmpty()){
-            double operatorResult = applyOperator(operators.pop(),
+            double operatorResult = applyOperatorToA_B(operators.pop(),
                     values.pop(), values.pop());
             values.push(operatorResult);
         }
@@ -64,28 +83,40 @@ public class ExpressionCalculator {
 
     }
 
-    /*** Applies the operator to a and b, in the case of operators (sin, cos,
-     *  tan, log10, log, sqrt) operator applied to only a
+    /*** In the case of operators (sin, cos,
+     *  tan, log10, log, sqrt) operator applied to only x
+     *
+     * @param operator - the operation to be performed on number x
+     * @param x - number to be operated
+     * @return double - result of operand applied
+     */
+    public static double applyOperatorToX(String operator, double x){
+        switch(operator) {
+            case "sin":
+                return Math.sin(x);
+            case "cos":
+                return Math.cos(x);
+            case "tan":
+                return Math.tan(x);
+            case "log":
+                return Math.log10(x);
+            case "ln":
+                return Math.log(x);
+            case "sqrt":
+                return Math.sqrt(x);
+        }
+        return -3;
+    }
+
+    /*** Applies the operator to a and b
      *
      * @param operator the operation to be performed on numbers a and b
      * @param a - double - first number to be operated on
      * @param b - double - second number to be operated on
      * @return double - value of ( a <operator> b)
      */
-    public static double applyOperator(String operator, double a, double b){
+    public static double applyOperatorToA_B(String operator, double a, double b){
         switch(operator){
-            case "sin":
-                return Math.sin(a);
-            case "cos":
-                return Math.cos(a);
-            case "tan":
-                return Math.tan(a);
-            case "log":
-                return Math.log10(a);
-            case "ln":
-                return Math.log(a);
-            case "sqrt":
-                return Math.sqrt(a);
             case "+":
                 return a + b;
             case "-":
@@ -108,12 +139,12 @@ public class ExpressionCalculator {
      * @return boolean - true if precedence of 'op2' >= 'op1', false otherwise
      */
     public static boolean hasPrecedence(String op1, String op2){
-        if(op2 == "(" || op2 == ")"){
+        if(op2.equals("(") || op2.equals(")")){
             return false;
         }
-        if((op1 == "*" || op1 == "/" || op1 == "sin" || op1 == "cos" ||
-                op1 == "tan" || op1 == "log" || op1 == "ln" || op1 == "sqrt")
-                && (op2 == "+" || op2 == "-")){
+        if((op1.equals("*") || op1.equals("/") || op1.equals("sin") || op1.equals("cos") ||
+                op1.equals("tan") || op1.equals("log") || op1.equals("ln") || op1.equals("sqrt"))
+                && (op2.equals("+") || op2.equals("-"))){
             return false;
         }else{
             return true;
@@ -126,12 +157,16 @@ public class ExpressionCalculator {
      * @return boolean - true if str is an operator, false if otherwise
      */
     public static boolean isOperator(String str){
-        if(str == "sin" || str == "cos" || str == "tan" || str == "log" ||
-                str == "ln" || str == "sqrt" || str == "*" || str == "/" ||
-                str == "+" ||str == "-"){
+        if(str.equals("sin") || str.equals("cos") || str.equals("tan") || str.equals("log") ||
+                str.equals("ln") || str.equals("sqrt") || str.equals("*") || str.equals("/") ||
+                str.equals("+") ||str.equals("-")){
             return true;
         }
         return false;
     }
+
+
+
+
 
 }
