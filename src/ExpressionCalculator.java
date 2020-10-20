@@ -2,7 +2,14 @@ import java.util.Stack;
 import java.math.*;
 
 public class ExpressionCalculator {
-    public static int evaluate(String expression) {
+
+
+    /*** evaluate a mathematical expression in infix format to postfix
+     *
+     * @param expression - string - mathematical expression to be evaluated
+     * @return double - the result of evaluating the mathematical expression
+     */
+    public static double evaluate(String expression) {
         String[] tokens = expression.split(" ");
 
         // Stack for values
@@ -42,10 +49,19 @@ public class ExpressionCalculator {
                 // push current token to operator stack
                 operators.push(tokens[i]);
             }
-
         }
 
-        return -1;
+        // at this point expression should be parsed int post fix
+        // calculate expression
+        while(!operators.isEmpty()){
+            double operatorResult = applyOperator(operators.pop(),
+                    values.pop(), values.pop());
+            values.push(operatorResult);
+        }
+
+        // first element in value stack should contain result
+        return values.pop();
+
     }
 
     /*** Applies the operator to a and b, in the case of operators (sin, cos,
