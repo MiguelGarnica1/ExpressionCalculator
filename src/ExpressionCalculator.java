@@ -29,8 +29,18 @@ public class ExpressionCalculator {
                 }
                 operators.pop();
             }
-            else if(isOperator(tokens[i])){
-
+            else if(isOperator(tokens[i])){ // check for operator
+                // while top of operator stack has same
+                // or greater precedence to this operator
+                // apply operator to top two elements in value stack
+                while(!operators.isEmpty() &&
+                        hasPrecedence(tokens[i], operators.peek())){
+                    double operatorResult = applyOperator(operators.pop(),
+                            values.pop(), values.pop());
+                    values.push(operatorResult);
+                }
+                // push current token to operator stack
+                operators.push(tokens[i]);
             }
 
         }
