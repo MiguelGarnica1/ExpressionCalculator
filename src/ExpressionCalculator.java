@@ -22,6 +22,14 @@ public class ExpressionCalculator {
             } else if (singleToken == '(') {
                 operators.push(tokens[i]);
             } else if (singleToken == ')') {
+                while(operators.peek() != "("){
+                    double operatorResult = applyOperator(operators.pop(),
+                            values.pop(), values.pop());
+                    values.push(operatorResult);
+                }
+                operators.pop();
+            }
+            else if(isOperator(tokens[i])){
 
             }
 
@@ -78,11 +86,26 @@ public class ExpressionCalculator {
             return false;
         }
         if((op1 == "*" || op1 == "/" || op1 == "sin" || op1 == "cos" ||
-                op1 == "tan" || op1 == "sqrt") && (op2 == "+" || op2 == "-")){
+                op1 == "tan" || op1 == "log" || op1 == "ln" || op1 == "sqrt")
+                && (op2 == "+" || op2 == "-")){
             return false;
         }else{
             return true;
         }
+    }
+
+    /*** Checks if string is a mathematical operator
+     *
+     * @param str - potential operator to be checked
+     * @return boolean - true if str is an operator, false if otherwise
+     */
+    public static boolean isOperator(String str){
+        if(str == "sin" || str == "cos" || str == "tan" || str == "log" ||
+                str == "ln" || str == "sqrt" || str == "*" || str == "/" ||
+                str == "+" ||str == "-"){
+            return true;
+        }
+        return false;
     }
 
 }
