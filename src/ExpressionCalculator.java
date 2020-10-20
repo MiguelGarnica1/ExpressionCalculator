@@ -18,7 +18,7 @@ public class ExpressionCalculator {
 
             // push numbers to value stack
             if (singleToken >= '0' && singleToken <= '9') {
-                values.push(Integer.parseInt(tokens[i]));
+                values.push(Double.parseDouble(tokens[i]));
             } else if (singleToken == '(') {
                 operators.push(tokens[i]);
             } else if (singleToken == ')') {
@@ -65,6 +65,24 @@ public class ExpressionCalculator {
                 return a / b;
             }
             return -2;
+    }
+
+    /*** Method to check precedence of operators
+     *
+     * @param op1 - the first operand
+     * @param op2 - the second operand
+     * @return boolean - true if precedence of 'op2' >= 'op1', false otherwise
+     */
+    public static boolean hasPrecedence(String op1, String op2){
+        if(op2 == "(" || op2 == ")"){
+            return false;
+        }
+        if((op1 == "*" || op1 == "/" || op1 == "sin" || op1 == "cos" ||
+                op1 == "tan" || op1 == "sqrt") && (op2 == "+" || op2 == "-")){
+            return false;
+        }else{
+            return true;
+        }
     }
 
 }
