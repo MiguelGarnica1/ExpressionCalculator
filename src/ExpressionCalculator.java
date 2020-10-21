@@ -36,6 +36,9 @@ public class ExpressionCalculator {
 
         String unaryTrig = "1 + -sin ( 3.14 / 2 )";
         System.out.println(unaryTrig + " = " + evaluate(unaryTrig));
+
+        String bigExpression = "-5.78 + -( 4 - 2.23 ) + sin ( 0 ) * cos ( 1 ) / ( 1 + tan ( 2 * ln ( -3 + 2 * ( 1.23 + 99.111 ) ) ) )";
+        System.out.println(bigExpression + " = " + evaluate(bigExpression));
     }
 
     /*** evaluate a mathematical expression in infix format to postfix
@@ -180,7 +183,7 @@ public class ExpressionCalculator {
             case "+":
                 return a + b;
             case "-":
-                return a - b;
+                return b - a;
             case "*":
                 return a * b;
             case "/":
