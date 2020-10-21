@@ -28,8 +28,14 @@ public class ExpressionCalculator {
         String exponents = "2 ^ ( 3 + 1 )";
         System.out.println(exponents + " = " + evaluate(exponents));
 
-        String unaryOP = "2 + 3 + -2";
+        String unaryOP = "5 + 3 + -2";
         System.out.println(unaryOP + " = " + evaluate(unaryOP));
+
+        String unaryComplex = "2 * -( 3 + 1 )";
+        System.out.println(unaryComplex + " = " + evaluate(unaryComplex));
+
+        String unaryTrig = "1 + -sin ( 3.14 / 2 )";
+        System.out.println(unaryTrig + " = " + evaluate(unaryTrig));
     }
 
     /*** evaluate a mathematical expression in infix format to postfix
@@ -48,10 +54,24 @@ public class ExpressionCalculator {
 
         for (int i = 0; i < tokens.length; i++) {
 
+            // skip any extra whitespaces
+            if(tokens[i].equals(" ")) continue;
+
+            String currentToken = tokens[i];
+
             //get char value of token ( 's'in, '*', '+', '/', etc)
             char singleToken = tokens[i].charAt(0);
 
-        
+            // check for unary operation of "-"
+            if(singleToken == '-' && tokens[i].length() > 1){
+                singleToken = tokens[i].charAt(1); // move to next token
+                if(!(singleToken >= '0' &&  singleToken <= '9')){
+                    // if it is not a number add -1 and * to stacks
+                    values.push(-1.0);
+                    operators.push("*");
+                    tokens[i] = tokens[i].replace("-","");
+                }
+            }
 
             // push numbers to value stack
             if (singleToken >= '0' && singleToken <= '9') {
@@ -125,16 +145,22 @@ public class ExpressionCalculator {
     public static double applyOperatorToX(String operator, double x){
         switch(operator) {
             case "sin":
+            case "-sin":
                 return Math.sin(x);
             case "cos":
+            case "-cos":
                 return Math.cos(x);
             case "tan":
+            case "-tan":
                 return Math.tan(x);
             case "log":
+            case "-log":
                 return Math.log10(x);
             case "ln":
+            case "-ln":
                 return Math.log(x);
             case "sqrt":
+            case "-sqrt":
                 return Math.sqrt(x);
         }
         return -3;
