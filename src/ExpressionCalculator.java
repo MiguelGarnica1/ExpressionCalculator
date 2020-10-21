@@ -4,8 +4,11 @@ import java.math.*;
 public class ExpressionCalculator {
 
     public static void main(String[] args){
-        String expression = "2 + 3 + 2";
-        System.out.println(expression + " = " + evaluate(expression));
+        String addition = "2 + 3 + 2";
+        System.out.println(addition + " = " + evaluate(addition));
+
+        String subtraction = "10 - 3 + 2";
+        System.out.println(subtraction + " = " + evaluate(subtraction));
 
         String multiExp = "2 + 3 * 3";
         System.out.println(multiExp + " = " + evaluate(multiExp));
@@ -16,11 +19,17 @@ public class ExpressionCalculator {
         String decimals = "109.45 + 311.24";
         System.out.println(decimals + " = " + evaluate(decimals));
 
-        String simpTrig = "cos ( 3.14 )";
+        String simpTrig = "cos ( 3.145926 )";
         System.out.println(simpTrig + " = " + evaluate(simpTrig));
 
-        String complexTrig = "sin ( 3.14 / 2 ) + cos ( 3.14 )";
+        String complexTrig = "sin ( 3.145926 / 2 ) + cos ( 3.145926 )";
         System.out.println(complexTrig + " = " + evaluate(complexTrig));
+
+        String exponents = "2 ^ ( 3 + 1 )";
+        System.out.println(exponents + " = " + evaluate(exponents));
+
+        String unaryOP = "2 + 3 + -2";
+        System.out.println(unaryOP + " = " + evaluate(unaryOP));
     }
 
     /*** evaluate a mathematical expression in infix format to postfix
@@ -42,6 +51,8 @@ public class ExpressionCalculator {
             //get char value of token ( 's'in, '*', '+', '/', etc)
             char singleToken = tokens[i].charAt(0);
 
+        
+
             // push numbers to value stack
             if (singleToken >= '0' && singleToken <= '9') {
                 values.push(Double.parseDouble(tokens[i]));
@@ -49,20 +60,34 @@ public class ExpressionCalculator {
                 operators.push(tokens[i]);
             } else if (singleToken == ')') {
                 while(!operators.peek().equals("(")){
-                    double operatorResult = applyOperatorToA_B(operators.pop(),
-                            values.pop(), values.pop());
+
+                    // check if operator is regular or trig and calculate accordingly
+                    double operatorResult = 0;
+                    if(isOperator(operators.peek())){
+                        operatorResult = applyOperatorToA_B(operators.pop(),
+                                values.pop(), values.pop());
+                    } else if (isSpecialOperator(operators.peek())){
+                        operatorResult = applyOperatorToX(operators.pop(), values.pop());
+                    }
                     values.push(operatorResult);
                 }
                 operators.pop();
             }
-            else if(isOperator(tokens[i])){ // check for operator
+            else if(isOperator(tokens[i]) || isSpecialOperator(tokens[i])){ // check for operator
                 // while top of operator stack has same
                 // or greater precedence to this operator
                 // apply operator to top two elements in value stack
                 while(!operators.isEmpty() &&
                         hasPrecedence(tokens[i], operators.peek())){
-                    double operatorResult = applyOperatorToA_B(operators.pop(),
-                            values.pop(), values.pop());
+
+                    // check if operator is regular or trig and calculate accordingly
+                    double operatorResult = 0;
+                    if(isOperator(operators.peek())){
+                        operatorResult = applyOperatorToA_B(operators.pop(),
+                                values.pop(), values.pop());
+                    } else if (isSpecialOperator(operators.peek())){
+                        operatorResult = applyOperatorToX(operators.pop(), values.pop());
+                    }
                     values.push(operatorResult);
                 }
                 // push current token to operator stack
@@ -73,8 +98,15 @@ public class ExpressionCalculator {
         // at this point expression should be parsed int post fix
         // calculate expression
         while(!operators.isEmpty()){
-            double operatorResult = applyOperatorToA_B(operators.pop(),
-                    values.pop(), values.pop());
+
+            // check if operator is regular or trig and calculate accordingly
+            double operatorResult = 0;
+            if(isOperator(operators.peek())){
+                operatorResult = applyOperatorToA_B(operators.pop(),
+                        values.pop(), values.pop());
+            } else if (isSpecialOperator(operators.peek())){
+                operatorResult = applyOperatorToX(operators.pop(), values.pop());
+            }
             values.push(operatorResult);
         }
 
@@ -117,6 +149,8 @@ public class ExpressionCalculator {
      */
     public static double applyOperatorToA_B(String operator, double a, double b){
         switch(operator){
+            case "^":
+                return Math.pow(b, a);
             case "+":
                 return a + b;
             case "-":
@@ -143,7 +177,8 @@ public class ExpressionCalculator {
             return false;
         }
         if((op1.equals("*") || op1.equals("/") || op1.equals("sin") || op1.equals("cos") ||
-                op1.equals("tan") || op1.equals("log") || op1.equals("ln") || op1.equals("sqrt"))
+                op1.equals("tan") || op1.equals("log") || op1.equals("ln") || op1.equals("sqrt")
+                || op1.equals("^"))
                 && (op2.equals("+") || op2.equals("-"))){
             return false;
         }else{
@@ -157,16 +192,26 @@ public class ExpressionCalculator {
      * @return boolean - true if str is an operator, false if otherwise
      */
     public static boolean isOperator(String str){
-        if(str.equals("sin") || str.equals("cos") || str.equals("tan") || str.equals("log") ||
-                str.equals("ln") || str.equals("sqrt") || str.equals("*") || str.equals("/") ||
-                str.equals("+") ||str.equals("-")){
+        if(str.equals("*") || str.equals("/") ||
+                str.equals("+") ||str.equals("-") ||str.equals("^")){
             return true;
         }
         return false;
     }
 
-
-
+    /*** Checks if string is a special operator that takes one input (sin, cos,
+     *  tan, log10, ln, sqrt)
+     *
+     * @param str - potential operator to be checked
+     * @return boolean - true if str is an operator, false if otherwise
+     */
+    public static boolean isSpecialOperator(String str){
+        if(str.equals("sin") || str.equals("cos") || str.equals("tan") || str.equals("log") ||
+                str.equals("ln") || str.equals("sqrt")){
+            return true;
+        }
+        return false;
+    }
 
 
 }
