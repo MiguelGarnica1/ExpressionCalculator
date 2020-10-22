@@ -28,9 +28,6 @@ public class ExpressionCalculator {
         String exponents = "2 ^ ( 3 + 1 )";
         System.out.println(exponents + " = " + evaluate(exponents));
 
-        String division = "30 / 5 / 2";
-        System.out.println(division + " = " + evaluate(division));
-
         String unaryOP = "5 + 3 + -2";
         System.out.println(unaryOP + " = " + evaluate(unaryOP));
 
