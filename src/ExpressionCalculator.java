@@ -37,7 +37,7 @@ public class ExpressionCalculator {
         String unaryTrig = "1 + -sin ( 3.14 / 2 )";
         System.out.println(unaryTrig + " = " + evaluate(unaryTrig));
 
-        String bigExpression = "-5.78 + -( 4 - 2.23 ) + sin ( 0 ) * cos ( 1 ) / ( 1 + tan ( 2 * ln ( -3 + 2 * ( 1.23 + 99.111 ) ) ) )";
+        String bigExpression = "-5.78 + -( 4 - 2.23 ) + sin ( 0 ) * ( cos ( 1 ) / ( 1 + tan ( 2 * ln ( -3 + 2 * ( 1.23 + 99.111 ) ) ) ) )";
         System.out.println(bigExpression + " = " + evaluate(bigExpression));
     }
 
@@ -165,6 +165,9 @@ public class ExpressionCalculator {
             case "sqrt":
             case "-sqrt":
                 return Math.sqrt(x);
+            case "cot":
+            case "-cot":
+                return  1.0 / Math.tan(x);
         }
         return -3;
     }
@@ -207,7 +210,7 @@ public class ExpressionCalculator {
         }
         if((op1.equals("*") || op1.equals("/") || op1.equals("sin") || op1.equals("cos") ||
                 op1.equals("tan") || op1.equals("log") || op1.equals("ln") || op1.equals("sqrt")
-                || op1.equals("^"))
+                || op1.equals("cot") || op1.equals("^"))
                 && (op2.equals("+") || op2.equals("-"))){
             return false;
         }else{
@@ -236,7 +239,7 @@ public class ExpressionCalculator {
      */
     public static boolean isSpecialOperator(String str){
         if(str.equals("sin") || str.equals("cos") || str.equals("tan") || str.equals("log") ||
-                str.equals("ln") || str.equals("sqrt")){
+                str.equals("ln") || str.equals("sqrt") || str.equals("cot")){
             return true;
         }
         return false;
